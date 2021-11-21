@@ -1,0 +1,29 @@
+{
+  "name": "appoint",
+  "version": "1.0.0",
+  "description": "Web aplication for health care units",
+  "main": "auth.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Oivasmf/Appoint.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Oivasmf/Appoint/issues"
+  },
+  "homepage": "https://github.com/Oivasmf/Appoint#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "hashcode": "^1.0.3",
+    "jsonwebtoken": "^8.5.1",
+    "knex": "^0.95.14",
+    "mysql2": "^2.3.3"
+  }
+}
