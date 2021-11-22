@@ -4,18 +4,20 @@ const encode = require( 'hashcode' ).hashCode;
 const jwt = require('jsonwebtoken');
 
 router.post('/', (req, res) => {
-    //recebe do front os dados de 'login' e 'password' e checa no banco.
-    //caso exista, retorna um token. Caso contrário, retorna um erro.
-    knex('Users')
+    /*recebe do front: 
+    {"email_paciente":"aaaa","senha_paciente":"bbbb"}
+
+    Se o email constar no banco de dados, criptografa a senha e compara com a cadastrada. Se a senha não coincidir ou se o email não constar no banco, retora a mesma mensagem de erro por segurança.*/
+    knex('pacientes')
     .where({
-        User: req.body.login
+        email_paciente: req.body.email_paciente
     })
     .select('*')
     .then(data => {
-        var encodedPassword = encode().value(req.body.password); //aplica o hashcode
-        if(data[0].Password == encodedPassword){ //compara as senhas
+        var encodedPassword = encode().value(req.body.senha_paciente); //aplica o hashcode
+        if(data[0].senha_paciente == encodedPassword){ //compara as senhas
             const user_token = jwt.sign({ //gera o token
-                Id_users: data[0].Id_users
+                Id_user: data[0].email_paciente
             }, process.env.TOKEN_SECRET);
 
             res.status(200).json({ //envia o token
@@ -29,7 +31,7 @@ router.post('/', (req, res) => {
     })
     .catch(() => {
         res.status(401).json({ //caso de usuário não encontrado
-            err: 'Usuário ou senha não encontrados!'
+            err: 'Usuário ou senha não encontrados!',
         });
     });
 });
