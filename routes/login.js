@@ -8,7 +8,7 @@ router.post('/', (req, res) => {
     {"email_paciente":"aaaa","senha_paciente":"bbbb"}
 
     Se o email constar no banco de dados, criptografa a senha e compara com a cadastrada. Se a senha não coincidir ou se o email não constar no banco, retora a mesma mensagem de erro por segurança.*/
-    knex('pacientes')
+    knex('Pacientes')
     .where({
         email_paciente: req.body.email_paciente
     })
