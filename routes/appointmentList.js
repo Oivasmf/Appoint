@@ -1,6 +1,5 @@
 const router = require('express').Router();
 const knex = require("../database");
-const encode = require( 'hashcode' ).hashCode;
 const jwt = require('jsonwebtoken');
 
 router.get('/', (req, res) => {
@@ -27,7 +26,7 @@ router.get('/', (req, res) => {
     .leftJoin('Enderecos AS end', 'end.id_endereco', 'con.id_endereco')
     .leftJoin('Clinicas AS c', 'c.id_clinica', 'con.id_clinicas')
     .leftJoin('Cidades AS cid', 'cid.id_cidade', 'end.Cidades_id_cidade')
-    .where('con.id_paciente', '=', id) 
+    .where('con.id_paciente', '=', decoded) 
     .then(data => {
         res.send(data);
     })
