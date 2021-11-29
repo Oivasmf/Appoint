@@ -2,14 +2,13 @@ const router = require('express').Router();
 const knex = require("../database");
 const encode = require( 'hashcode' ).hashCode;
 const jwt = require('jsonwebtoken');
-const id = 1; // Testar consulta
 
 router.get('/', (req, res) => {
 
-    /*const jwt = require('jsonwebtoken');
+    const jwt = require('jsonwebtoken');
     let token = req.headers['authorization'];
     token = token.split(' ').pop();
-    var decoded = jwt.decode(token, process.env.TOKEN_SECRET, true); //Captura a informação recebida do token vindo do front-end*/
+    var decoded = jwt.decode(token, process.env.TOKEN_SECRET, true); //Captura a informação recebida do token vindo do front-end
 
     knex
     .select(
@@ -28,12 +27,14 @@ router.get('/', (req, res) => {
     .leftJoin('Enderecos AS end', 'end.id_endereco', 'con.id_endereco')
     .leftJoin('Clinicas AS c', 'c.id_clinica', 'con.id_clinicas')
     .leftJoin('Cidades AS cid', 'cid.id_cidade', 'end.Cidades_id_cidade')
-    .where('con.id_paciente', '=', id) //Testar consulta
+    .where('con.id_paciente', '=', id) 
     .then(data => {
         res.send(data);
     })
     .catch(() => {
-
+        res.status(501).json({ //caso de usuário não encontrado
+            err: 'Erro no servidor!',
+        });
     })
 
 });
