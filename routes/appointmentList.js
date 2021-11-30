@@ -8,9 +8,11 @@ router.get('/', (req, res) => {
     let token = req.headers['authorization'];
     token = token.split(' ').pop();
     var decoded = jwt.decode(token, process.env.TOKEN_SECRET, true); //Captura a informação recebida do token vindo do front-end
+    
 
     knex
     .select(
+        'id_consulta',
         'm.nome_medico',
         'e.especialidade',
         'fp.formaPagamento',
@@ -31,11 +33,29 @@ router.get('/', (req, res) => {
         res.send(data);
     })
     .catch(() => {
-        res.status(501).json({ //caso de usuário não encontrado
+        res.status(501).json({ //Caso ocorra alguém problema no servidor.
             err: 'Erro no servidor!',
         });
     })
 
 });
 
+router.post('/', (req, res) => {
+    knex('Consultas')
+    .where('Consultas.id_consulta', req.body.id_consulta)
+    .del()
+
+    .then(data => {
+        res.status(200).json({ 
+            acerto: 'Deletado a consulta!'
+        });
+    })
+
+    .catch(() => {
+        res.status(501).json({ //Caso ocorra alguém problema no servidor.
+            err: 'Erro no servidor!',
+        });
+    })
+
+});
 module.exports = router;
