@@ -59,6 +59,9 @@ router.post('/', (req, res) => {
             }
         })
         .catch(() => {
+            res.status(500).json({
+                err:'Erro na conexão com o banco de dados'
+            })
         })
 });
 
