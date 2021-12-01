@@ -1,55 +1,65 @@
 const router = require('express').Router();
 const knex = require("../database");
-const encode = require( 'hashcode' ).hashCode;
+const encode = require('hashcode').hashCode;
 const jwt = require('jsonwebtoken');
 
 router.post('/', (req, res) => {
     /*recebe do front: 
-    {"nome_paciente":"aaaa", "email_paciente":"bbbb", "senha_paciente":"cccc", "confirmacao_senha":c2c2", "cpf_paciente":"dddd", "data_nascimento_paciente":"yyyy-mm-dd", "sexo":"x", "telefone"(opcional):"eeee","nome_rua":"ffff", "numero":"gggg", "complemento":"hhhh"}
+    {"nome_paciente":"Marcelo Grande", "email_paciente":"marcelo@gmail.com", "senha_paciente":"cccc", "confirmacao_senha":"cccc", "cpf_paciente":"06359722912", "data_nascimento_paciente":"2001-08-20", "sexo":"M", "telefone":"","id_cidade":"10", "bairro":"Vargem Grande","nome_rua":"Estrada dos Testes", "numero":"2525", "complemento":"Casa 02"}
 
     Se o cpf constar no banco de dados, impede o registro. Senão, insere um registro na tabela Pacientes.*/
     knex('pacientes')
-    .where({
-        cpf_paciente: req.body.cpf_paciente
-    })
-    .select('*')
-    .then(data => {
-        if(data[0]){ //caso de cpf já cadastrado
-            res.status(401).json({
-                err:'Um usuário com este CPF já consta no sistema.'
-            });
-        } else{ //cadastro de usuário
-            console.log(req.body.senha_paciente);
-            var encodedPassword = encode().value(req.body.senha_paciente); //aplica o hashcode para a senha
-                 knex('pacientes') //TESTAR
-                .insert({'nome_paciente':req.body.nome_paciente, 'email_paciente':req.body.email_paciente, 'senha_paciente':encodedPassword, 'cpf_paciente':req.body.cpf_paciente, 'data_nascimento_paciente':req.body.data_nascimento_paciente, 'sexo':req.body.sexo, 'telefone':req.body.telefone,'id_cidade':req.body.id_cidade, 'bairro':req.body.bairro, 'nome_rua':req.body.nome_rua, 'numero':req.body.numero, 'complemento':req.body.complemento,})
-                .then(resposta =>{
-                    console.log(resposta);
-                })
-        }
-    })
-    .catch(() => {
-        if(req.body.senha_paciente != req.body.confirmacao_senha){
-            res.status(401).json({
-                err:'Usuário não pôde ser cadastrado: senhas divergentes.'
-            });
-        } else{
-            /*if(req.body.telefone){
-                knex('pacientes') //TESTAR
-                .insert({"nome_paciente":"req.body.nome_paciente", "email_paciente":"req.body.email_paciente", "senha_paciente":encodedPassword, "cpf_paciente":"req.body.cpf_paciente", "data_nascimento_paciente":"req.body.data_nascimento_paciente", "sexo":"req.body.sexo", "telefone"(opcional):"req.body.telefone","nome_rua":"req.body.nome_rua", "numero":"req.body.numero", "complemento":"req.body.complemento", //DEFINIR BAIRRO})
-                .then(TESTAR RESPOSTA PARA SUCESSO / FALHA)
-            } else {
-                knex('pacientes') //TESTAR
-                .insert({"nome_paciente":"req.body.nome_paciente", "email_paciente":"req.body.email_paciente", "senha_paciente":encodedPassword, "cpf_paciente":"req.body.cpf_paciente", "data_nascimento_paciente":"req.body.data_nascimento_paciente", "sexo":"req.body.sexo","nome_rua":"req.body.nome_rua", "numero":"req.body.numero", "complemento":"req.body.complemento", //DEFINIR BAIRRO})
-                .then(TESTAR RESPOSTA PARA SUCESSO / FALHA)
+        .where({
+            cpf_paciente: req.body.cpf_paciente
+        })
+        .select('*')
+        .then(data => {
+            if (data[0]) { //caso de cpf já cadastrado
+                res.status(401).json({
+                    err: 'Um usuário com este CPF já consta no sistema.'
+                });
+            } else { //cadastro de usuário
+                if (req.body.senha_paciente != req.body.confirmacao_senha) {
+                    res.status(401).json({
+                        err: 'Usuário não pôde ser cadastrado: senhas divergentes.'
+                    });
+                } else {
+
+                    var encodedPassword = encode().value(req.body.senha_paciente); //aplica o hashcode para a senha
+
+                    knex('Enderecos')
+                        .insert({ 'bairro': req.body.bairro, 'nome_rua': req.body.nome_rua, 'numero': req.body.numero, 'complemento': req.body.complemento, 'Cidades_id_cidade': req.body.id_cidade })
+                        .then(resposta_id_endereco => {
+                            knex('pacientes')
+                                .insert({
+                                    'nome_paciente': req.body.nome_paciente, 'email_paciente': req.body.email_paciente, 'senha_paciente': encodedPassword, 'cpf_paciente': req.body.cpf_paciente, 'data_nascimento_paciente': req.body.data_nascimento_paciente, 'sexo': req.body.sexo, 'telefone': req.body.telefone, 'Enderecos_id_endereco': resposta_id_endereco
+                                })
+                                .then(() => {
+                                    res.status(200).json({ //sucesso
+                                        msg: 'Usuário cadastrado com sucesso.'
+                                    })
+                                })
+                                .catch(() => {
+                                    knex('Enderecos')
+                                        .where('id_endereco', resposta_id_endereco)
+                                        .del()
+                                    .then(() =>{
+                                        res.status(401).json({ //caso de falha no registro | Dados pessoais
+                                            err: 'Usuário não pôde ser cadastrado: dados pessoais inconsistentes.'
+                                        })
+                                    })
+                                })
+                        })
+                        .catch(() => { //caso de falha no registro | Endereço
+                            res.status(401).json({
+                                err: 'Usuário não pôde ser cadastrado: informações de endereço inconsistentes.'
+                            })
+                        })
+                }
             }
-            
-            res.status(200).json({ 
-                msg: 'Usuário cadastrado com sucesso.' //Redireciona para a tela de login
-            });
-            */
-        }
-    })
+        })
+        .catch(() => {
+        })
 });
 
 module.exports = router;
