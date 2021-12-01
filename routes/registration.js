@@ -8,7 +8,7 @@ router.post('/', (req, res) => {
     {"nome_paciente":"Marcelo Grande", "email_paciente":"marcelo@gmail.com", "senha_paciente":"cccc", "confirmacao_senha":"cccc", "cpf_paciente":"06359722912", "data_nascimento_paciente":"2001-08-20", "sexo":"M", "telefone":"","id_cidade":"10", "bairro":"Vargem Grande","nome_rua":"Estrada dos Testes", "numero":"2525", "complemento":"Casa 02"}
 
     Se o cpf constar no banco de dados, impede o registro. Senão, insere um registro na tabela Pacientes.*/
-    knex('pacientes')
+    knex('Pacientes')
         .where({
             cpf_paciente: req.body.cpf_paciente
         })
@@ -63,6 +63,52 @@ router.post('/', (req, res) => {
                 err:'Erro na conexão com o banco de dados'
             })
         })
+});
+
+router.get('/estados', (req, res) => {
+    knex.select('id_estado', 'estado').table('Estados')
+    .then(estados =>{
+        res.status(200).json({
+            estados
+        })
+    })
+    .catch(() => {
+        res.status(500).json({
+            err:'Erro na conexão com o banco de dados'
+        })
+    })
+});
+
+// router.get('/cidades', (req, res) => { //Lista estática de cidades
+//     knex.select('id_cidade', 'cidade').table('Cidades')
+//     .then(cidades =>{
+//         res.status(200).json({
+//             cidades
+//         })
+//     })
+//     .catch(() => {
+//         res.status(500).json({
+//             err:'Erro na conexão com o banco de dados'
+//         })
+//     })
+// });
+
+router.get('/cidades', (req, res) => { //Lista de cidades com seleção de estado
+    knex.select('id_cidade', 'cidade')
+    .table('Cidades')
+    .where({
+        Estados_id_estado: req.body.id_estado
+    })
+    .then(cidades =>{
+        res.status(200).json({
+            cidades
+        })
+    })
+    .catch(() => {
+        res.status(500).json({
+            err:'Erro na conexão com o banco de dados'
+        })
+    })
 });
 
 module.exports = router;
