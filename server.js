@@ -8,10 +8,12 @@ const authentication = require("./auth");
 
 const loginRouter = require('./routes/login');
 const registrationRouter = require('./routes/registration');
-/*const passwordRequestRouter = require('./routes/passwordRequest');
-const passwordChangeRouter = require('./routes/passwordChange');
 const appointmentListRouter = require('./routes/appointmentList');
-const makeAppointmentRouter = require('./routes/makeAppointment');*/
+const makeAppointmentRouter = require('./routes/makeAppointment');
+/*
+const passwordRequestRouter = require('./routes/passwordRequest');
+const passwordChangeRouter = require('./routes/passwordChange');
+*/
 
 
 const knex = require("./database");
@@ -24,10 +26,12 @@ app.use(cors());
 app.use(express.json());
 app.use('/login', loginRouter);
 app.use('/registration', registrationRouter);
-/*app.use('/passwordRequest', passwordRequestRouter);
+app.use('/appointmentList', appointmentListRouter);
+app.use('/makeAppointment', makeAppointmentRouter);
+/*
+app.use('/passwordRequest', passwordRequestRouter);
 app.use('/passwordChange', passwordChangeRouter);
-app.use('/appointmentList', authentication, appointmentListRouter);
-app.use('/makeAppointment', authentication, makeAppointmentRouter);*/
+*/
 
 
 const listener = app.listen(process.env.PORTA, () => {

@@ -30,7 +30,7 @@ router.post('/', (req, res) => {
                     knex('Enderecos')
                         .insert({ 'bairro': req.body.bairro, 'nome_rua': req.body.nome_rua, 'numero': req.body.numero, 'complemento': req.body.complemento, 'Cidades_id_cidade': req.body.id_cidade })
                         .then(resposta_id_endereco => {
-                            knex('pacientes')
+                            knex('Pacientes')
                                 .insert({
                                     'nome_paciente': req.body.nome_paciente, 'email_paciente': req.body.email_paciente, 'senha_paciente': encodedPassword, 'cpf_paciente': req.body.cpf_paciente, 'data_nascimento_paciente': req.body.data_nascimento_paciente, 'sexo': req.body.sexo, 'telefone': req.body.telefone, 'Enderecos_id_endereco': resposta_id_endereco
                                 })
