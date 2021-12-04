@@ -18,7 +18,7 @@ router.post('/', (req, res) => {
         console.log(encodedPassword);
         if(data[0].senha_paciente == encodedPassword){ //compara as senhas
             const user_token = jwt.sign({ //gera o token
-                Id_user: data[0].email_paciente
+                Id_user: data[0].id_paciente
             }, process.env.TOKEN_SECRET);
 
             res.status(200).json({ //envia o token
