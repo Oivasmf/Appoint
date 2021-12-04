@@ -29,8 +29,10 @@ router.get('/', (req, res) => {
     .leftJoin('Clinicas AS c', 'c.id_clinica', 'con.id_clinicas')
     .leftJoin('Cidades AS cid', 'cid.id_cidade', 'end.Cidades_id_cidade')
     .where('con.id_paciente', '=', decoded) 
-    .then(data => {
-        res.send(data);
+    .then(consultas =>{
+        res.status(200).json({
+            consultas
+        })
     })
     .catch(() => {
         res.status(501).json({ //Caso ocorra alguém problema no servidor.
