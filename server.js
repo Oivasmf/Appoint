@@ -26,7 +26,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/login', loginRouter);
 app.use('/registration', registrationRouter);
-app.use('/appointmentList', appointmentListRouter);
+app.use('/appointmentList', authentication, appointmentListRouter);
 app.use('/makeAppointment', makeAppointmentRouter);
 /*
 app.use('/passwordRequest', passwordRequestRouter);
