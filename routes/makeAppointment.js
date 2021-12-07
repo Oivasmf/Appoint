@@ -24,19 +24,6 @@ router.post('/', (req, res) => {
         });
 });
 
-router.get('/medicos', (req, res) => {
-    knex.select('id_medico', 'nome_medico').table('Medicos')
-    .then(medicos =>{
-        res.status(200).json({
-            medicos
-        })
-    })
-    .catch(() => {
-        res.status(500).json({
-            err:'Erro ao consultar lista de médicos.'
-        })
-    })
-});
 
 router.get('/especialidades', (req, res) => {
     knex.select('id_especialidade', 'especialidade').table('Especialidades')
@@ -79,5 +66,21 @@ router.get('/formasdepagamento', (req, res) => {
         })
     })
 });
+
+router.get('/medicos', (req, res) => {
+    knex.select('id_medico', 'nome_medico').table('Medicos')
+    .then(medicos =>{
+        res.status(200).json({
+            medicos
+        })
+    })
+    .catch(() => {
+        res.status(500).json({
+            err:'Erro ao consultar lista de médicos.'
+        })
+    })
+});
+
+
 
 module.exports = router;
