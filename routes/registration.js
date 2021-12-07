@@ -93,7 +93,7 @@ router.get('/estados', (req, res) => {
 //     })
 // });
 
-router.get('/cidades', (req, res) => { //Lista de cidades com seleção de estado
+router.post('/cidades', (req, res) => { //Lista de cidades com seleção de estado
     knex.select('id_cidade', 'cidade')
     .table('Cidades')
     .where({
