@@ -14,7 +14,7 @@ router.post('/', (req, res) => {
      var decoded = jwt.decode(token, process.env.TOKEN_SECRET, true); //Captura a informação recebida do token vindo do front-end
     knex('Consultas')
         .insert({
-            "id_medico":req.body.id_medico,"id_especialidade":req.body.id_especialidade,"id_paciente":decoded.Id_user,"id_clinicas":req.body.id_clinicas,"id_FormasDePagamento":req.body.id_FormasDePagamento,"inicio_consulta":req.body.inicio_consulta
+            "id_endereco":req.body.id_endereco,"id_medico":req.body.id_medico,"id_especialidade":req.body.id_especialidade,"id_paciente":decoded.Id_user,"id_clinicas":req.body.id_clinicas,"id_FormasDePagamento":req.body.id_FormasDePagamento,"inicio_consulta":req.body.inicio_consulta
         })
         .then(() => {
             res.status(200).json({
@@ -44,7 +44,7 @@ router.get('/especialidades', (req, res) => {
 });
 
 router.get('/clinicas', (req, res) => {
-    knex.select('id_clinicas', 'nome_clinica').table('Clinicas')
+    knex.select('id_clinica', 'nome_clinica', 'Enderecos_id_endereco').table('Clinicas')
     .then(clinicas =>{
         res.status(200).json({
             clinicas
