@@ -57,14 +57,14 @@ router.get('/clinicas', (req, res) => {
     })
 });
 
-router.get('/enderecos', (req, res) => {
+router.post('/enderecos', (req, res) => {
     knex
     .select(
         'id_endereco',
         'end.nome_rua'
     )
     .from('Clinicas as cli')
-    .leftJoin('Endereco as end', 'end.id_endereco', 'cli.Enderecos_id_endereco')
+    .leftJoin('Enderecos as end', 'end.id_endereco', 'cli.Enderecos_id_endereco')
     .where('cli.id_clinica', '=', req.body.id_clinica) 
     .then(endereco =>{
         res.status(200).json({
