@@ -27,7 +27,7 @@ app.use(express.json());
 app.use('/login', loginRouter);
 app.use('/registration', registrationRouter);
 app.use('/appointmentList', authentication, appointmentListRouter);
-app.use('/makeAppointment', makeAppointmentRouter);
+app.use('/makeAppointment', authentication, makeAppointmentRouter);
 /*
 app.use('/passwordRequest', passwordRequestRouter);
 app.use('/passwordChange', passwordChangeRouter);

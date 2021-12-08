@@ -8,9 +8,13 @@ router.post('/', (req, res) => {
     {"id_medico":"int","id_especialidade":"int","id_paciente":"int","id_clinicas":"int","id_FormasDePagamento":"int","inicio_consulta":"datetime"}
 
     Adiciona uma consulta com as informações selecionadas.*/
+    const jwt = require('jsonwebtoken');
+    let token = req.headers['authorization'];
+     token = token.split(' ').pop();
+     var decoded = jwt.decode(token, process.env.TOKEN_SECRET, true); //Captura a informação recebida do token vindo do front-end
     knex('Consultas')
         .insert({
-            "id_medico":req.body.id_medico,"id_especialidade":req.body.id_especialidade,"id_paciente":req.body.id_paciente,"id_clinicas":req.body.id_clinicas,"id_FormasDePagamento":req.body.id_FormasDePagamento,"inicio_consulta":req.body.inicio_consulta
+            "id_medico":req.body.id_medico,"id_especialidade":req.body.id_especialidade,"id_paciente":decoded.Id_user,"id_clinicas":req.body.id_clinicas,"id_FormasDePagamento":req.body.id_FormasDePagamento,"inicio_consulta":req.body.inicio_consulta
         })
         .then(() => {
             res.status(200).json({
@@ -54,7 +58,7 @@ router.get('/clinicas', (req, res) => {
 });
 
 router.get('/formasdepagamento', (req, res) => {
-    knex.select('id_FormasDePagamento', 'formaPagamento').table('Formasdepagamento')
+    knex.select('id_FormasDePagamento', 'formaPagamento').table('FormasDePagamento')
     .then(formasDePagamento =>{
         res.status(200).json({
             formasDePagamento
